@@ -1,0 +1,154 @@
+1) pip install virtualenv
+
+2) virtualenv myenv
+
+3) cd myenv/Scripts/activate
+
+before :- C:\Users\PC15\Desktop\Aditya\Django-project-using-Env\myenv\Scripts>activate
+
+after :-  (myenv) C:\Users\PC15\Desktop\Aditya\Django-project-using-Env\myenv\Scripts>
+
+cd..
+cd..
+
+4) pip install Django
+
+5) django-admin startproject mysite .
+
+6) py manage.py runserver
+
+7) django-admin startapp myapp
+
+	Goto mysite/setting.py 
+
+					INSTALLED_APPS = [
+    						'myapp',
+					]
+
+8) Go to myapp/models.py 
+
+	from django.db import models
+
+	class Movies(models.Model):
+	        name = models.CharField(max_length=200)
+	    	rating = models.FloatField()
+
+	   	def __str__(self):
+        		return self.name
+
+9) Go to myapp/admin.py
+
+	from django.contrib import admin
+	from .models import Movies
+
+	admin.site.register(Movies) 
+
+10) Go to cmd :- py manage.py makemigrations
+	Migrations for 'myapp':
+	  	myapp\migrations\0001_initial.py
+   			 + Create model Movies
+
+10) Go to cmd :- py manage.py migrate
+
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, myapp, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying myapp.0001_initial... OK
+  Applying sessions.0001_initial... OK
+
+11) Go to cmd :- py manage.py createsuperuser
+
+Username (leave blank to use 'pc15'): aditya
+Email address: aditya@gmail.com
+Password:
+Password (again):
+The password is too similar to the username.
+This password is too short. It must contain at least 8 characters.
+This password is too common.
+Bypass password validation and create user anyway? [y/N]: y
+Superuser created successfully.
+
+11) Go to cmd :- py manage.py runserver
+
+	1	go to browser :- http://127.0.0.1:8000/admin/
+	2 	login
+
+			MYAPP
+				Moviess	Add  Change
+
+	3	 Add movie name and rating
+
+		name :- Pokemon
+		rating:- 5
+
+	4    Movies
+	      Pokémon
+
+12) go to myapp/views.py
+
+	from django.shortcuts import render
+	from .models import Movies
+
+	def movie_list(request):
+    		list = Movies.objects.all()
+    		return render(request,'myapp/movie_list.html',{'list':list})
+
+13) now go to myapp folder
+		1 create templates folder
+		2 in  templates folder create myapp
+		3  in myapp folder create movie_list.html
+
+	path :-   myapp /templates/ myapp/ movie_list.html
+	
+	movie_list.html
+
+		{% for movie in list  %}
+    			{{movie.name}}
+		{% endfor %}
+
+14) now in myapp application create urls.py
+
+     myapp/urls.py
+
+		from django.urls import path
+		from .views import movie_list  
+
+		urlpatterns = [
+    			path('', movie_list, name='movie_list'), 
+		]
+
+15) go to mysite/urls.py
+	
+	from django.contrib import admin
+	from django.urls import path,include
+
+	urlpatterns = [
+    		path('admin/', admin.site.urls),
+    		path('', include('myapp.urls'))
+	]
+
+16) cmd:- py manage.py runserver
+	
+	open link :- and see pokemon
+
+
+
+
+
