@@ -146,7 +146,69 @@ Superuser created successfully.
 
 16) cmd:- py manage.py runserver
 	
-	open link :- and see pokemon
+	open link :- and see
+						1  Movie name :-pokemon Rating :-5.0
+
+						2  Movie name :-Race Rating :-3.5
+17) Pagination
+	from django.shortcuts import render
+	from .models import Movies
+	from django.core.paginator import Paginator
+
+	def movie_list(request):
+    		list = Movies.objects.all()
+    		paginator = Paginator(list,3)
+    		page = request.GET.get('page')
+    		list = paginator.get_page(page)
+    		return render(request,'myapp/movie_list.html',{'list':list})
+
+
+
+18)
+ http://127.0.0.1:8000/?page=2 for checking
+
+movie_list.html
+
+	{% for movie in list  %}
+    		{{movie.id}} Movie name :-{{movie.name}} Rating :-{{movie.rating}} <br>
+	{% endfor %}
+
+	{% if list.has_previous %}
+    		<a href="?page=1">First</a>
+    		<a href="?page={{list.previous_page_number}}">Previous</a>
+	{% endif %}
+
+	Page: {{list.number}} of {{list.paginator.num_pages}}
+
+	{% if list.has_next %}
+    		<a href="?page={{list.paginator.num_pages}}">Last</a>
+    		<a href="?page={{list.next_page_number}}">Next</a>
+	{% endif %}
+
+19) Seachbar
+
+views.py
+
+def movie_list(request):
+    list = Movies.objects.all()
+
+    movie_name = request.GET.get('movie_name')
+    if movie_name != '' and movie_name is not None:
+        # list = list.filter(name=movie_name)
+        list = list.filter(name__icontains=movie_name)
+
+    paginator = Paginator(list,3)
+    page = request.GET.get('page')
+    list = paginator.get_page(page)
+
+    return render(request,'myapp/movie_list.html',{'list':list})
+
+movie_list.html
+
+<form action="" method="GET">
+    <input type="search" name="movie_name">
+    <button type="submit"> Search</button>
+</form>
 
 
 
